@@ -1,0 +1,25 @@
+---
+
+- name: install pkgs
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - cups
+
+- name: Write cups configuration
+  ansible.builtin.template:
+    src: "{{ item.config_file }}.j2"
+    dest: "/etc/cups/{{ item.config_file }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - { config_file: "cupsd.conf" }
+    - { config_file: "cups-files.conf"}
+  notify:
+    - cups
+
+
+
